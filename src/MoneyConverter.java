@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 class CurrencyConverter {
@@ -34,35 +35,45 @@ public class MoneyConverter {
         System.out.println("WELCOME TO CURRENCY CONVERSION APP!");
         Scanner scanner = new Scanner(System.in);
 
-        // Meminta pengguna memasukkan jumlah uang dalam IDR
-        System.out.print("Input Amount in IDR: ");
-        double jumlah = scanner.nextDouble();
+        try {
+            // Meminta pengguna memasukkan jumlah uang dalam IDR
+            System.out.print("Input Amount in IDR: ");
+            double jumlah = scanner.nextDouble();
 
-        //objek
-        CurrencyConverter converter = new CurrencyConverter(jumlah);
+            // Validasi input untuk memastikan jumlah yang dimasukkan adalah angka positif
+            if (jumlah <= 0) {
+                throw new IllegalArgumentException("Amount must be a positive number.");
+            }
 
-        System.out.println("Choose the conversion currency:");
-        System.out.println("a. USD");
-        System.out.println("b. SGD");
-        System.out.println("c. JPY");
+            //objek
+            CurrencyConverter converter = new CurrencyConverter(jumlah);
 
-        System.out.print("Choice: ");
-        String choice = scanner.next();
-        switch (choice.toLowerCase()) {
-            case "a":
-                System.out.println("Conversion result to USD: " + converter.USD() + " USD");
-                break;
-            case "b":
-                System.out.println("Conversion result to SGD: " + converter.SGD() + " SGD");
-                break;
-            case "c":
-                System.out.println("Conversion result to JPY: " + converter.JYP() + " JPY");
-                break;
-            default:
-                System.out.println("Invalid!");
+            System.out.println("Choose the conversion currency:");
+            System.out.println("a. USD");
+            System.out.println("b. SGD");
+            System.out.println("c. JPY");
+
+            System.out.print("Choice: ");
+            String choice = scanner.next();
+            switch (choice.toLowerCase()) {
+                case "a":
+                    System.out.println("Conversion result to USD: " + converter.USD() + " USD");
+                    break;
+                case "b":
+                    System.out.println("Conversion result to SGD: " + converter.SGD() + " SGD");
+                    break;
+                case "c":
+                    System.out.println("Conversion result to JPY: " + converter.JYP() + " JPY");
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input! Please enter a valid number.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            scanner.close();
         }
-
-        scanner.close();
-
     }
 }
