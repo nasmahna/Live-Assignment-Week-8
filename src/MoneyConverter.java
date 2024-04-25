@@ -1,79 +1,138 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-class CurrencyConverter {
-    private double jumlah;
+class BankAccount {
+    private final String accountNumber = "1234567890";
+    private final String PIN = "1234";
+    private double balance = 100000;
+    private int credit = 10000000;
 
-    // Constructor
-    public CurrencyConverter(double jumlah) {
-        this.jumlah = jumlah;
+    public boolean verification(String accNum, String pin) {
+
+        return accNum.equals(accountNumber) && pin.equals(PIN);
     }
 
-    // Get Method untuk mengambil nilai inputan user
-    public double getAmount() {
-        return jumlah;
+    public double getBalance() {
+
+        return balance;
     }
 
-    // IDR-USD
-    public double USD() {
-        return jumlah / 16.172;
+    public int getCredit() {
+
+        return credit;
     }
 
-    // IDR-SGD
-    public double SGD() {
-        return jumlah / 11.889;
+    public void setBalance(double newBalance) {
+
+        balance = newBalance;
     }
 
-    // IDR-JYP
-    public double JYP() {
-        return jumlah / 103;
+    public void setCredit(int newCredit) {
+
+        credit = newCredit;
     }
 }
 
-public class MoneyConverter {
+class BankSystem {
+    public static void withdrawal(BankAccount account, double amount) {
+        if (amount > account.getBalance() || account.getBalance() - amount < 50000) {
+            System.out.println("Withdrawal failed. Insufficient balance or minimum balance requirement not met.");
+        } else {
+            double newBalance = account.getBalance() - amount;
+            account.setBalance(newBalance);
+            System.out.println("Withdrawal successful! New balance: " + newBalance);
+        }
+    }
+
+    public static void deposit(BankAccount account, double amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid deposit amount.");
+        } else {
+            double newBalance = account.getBalance() + amount;
+            account.setBalance(newBalance);
+            System.out.println("Deposit successful! New balance: " + newBalance);
+        }
+    }
+
+    public static void convertCreditToCash(BankAccount account, int creditToConvert) {
+        if (creditToConvert <= 0 || creditToConvert > account.getCredit()) {
+            System.out.println("Invalid credit amount or insufficient credit.");
+        } else {
+            int convertedAmount = creditToConvert * 1000;
+            double newBalance = account.getBalance() + convertedAmount;
+            int newCredit = account.getCredit() - creditToConvert;
+            account.setBalance(newBalance);
+            account.setCredit(newCredit);
+            System.out.println("Credit conversion successful! New balance: " + newBalance + ", New credit: " + newCredit);
+        }
+    }
+}
+
+public class BankApplication {
     public static void main(String[] args) {
-        System.out.println("WELCOME TO CURRENCY CONVERSION APP!");
         Scanner scanner = new Scanner(System.in);
+        BankAccount account = new BankAccount();
 
-        try {
-            // Meminta pengguna memasukkan jumlah uang dalam IDR
-            System.out.print("Input Amount in IDR: ");
-            double jumlah = scanner.nextDouble();
+        System.out.println("==================================");
+        System.out.println("WELCOME TO SIMPLE BANKING APP!");
+        System.out.println("==================================");
+        System.out.print("Enter account number: ");
+        String accNum = scanner.next();
+        System.out.print("Enter PIN: ");
+        String pin = scanner.next();
 
-            // Validasi input untuk memastikan jumlah yang dimasukkan adalah angka positif
-            if (jumlah <= 0) {
-                throw new IllegalArgumentException("Amount must be a positive number.");
-            }
+        if (account.verification(accNum, pin)) {
+            System.out.println("Verification successful.");
+            System.out.println("Balance: " + account.getBalance());
+            System.out.println("Credit: " + account.getCredit());
 
-            //objek
-            CurrencyConverter converter = new CurrencyConverter(jumlah);
-
-            System.out.println("Choose the conversion currency:");
-            System.out.println("a. USD");
-            System.out.println("b. SGD");
-            System.out.println("c. JPY");
-
-            System.out.print("Choice: ");
+            System.out.println("==================================");
+            System.out.println("\nChoose an option:");
+            System.out.println("==================================");
+            System.out.println("a. Withdrawal");
+            System.out.println("b. Deposit");
+            System.out.println("c. Convert credit to cash");
+            System.out.println("==================================");
+            System.out.print("Enter your choice: ");
             String choice = scanner.next();
+
             switch (choice.toLowerCase()) {
                 case "a":
-                    System.out.println("Conversion result to USD: " + converter.USD() + " USD");
+                    try {
+                        System.out.print("Enter withdrawal amount: ");
+                        double withdrawalAmount = scanner.nextDouble();
+                        BankSystem.withdrawal(account, withdrawalAmount);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid number of withdrawl amount.");
+                        scanner.nextLine();
+                    }
                     break;
                 case "b":
-                    System.out.println("Conversion result to SGD: " + converter.SGD() + " SGD");
+                    try {
+                        System.out.print("Enter deposit amount: ");
+                        double depositAmount = scanner.nextDouble();
+                        BankSystem.deposit(account, depositAmount);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid number of deposit amount.");
+                        scanner.nextLine();
+                    }
                     break;
                 case "c":
-                    System.out.println("Conversion result to JPY: " + converter.JYP() + " JPY");
+                    try {
+                        System.out.print("Enter credit amount to convert: ");
+                        int creditToConvert = scanner.nextInt();
+                        BankSystem.convertCreditToCash(account, creditToConvert);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid number od credit amount.");
+                        scanner.nextLine();
+                    }
                     break;
                 default:
-                    System.out.println("Invalid choice!");
+                    System.out.println("Invalid choice.");
             }
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input! Please enter a valid number.");
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            scanner.close();
+        } else {
+            System.out.println("Error: Verification failed.");
         }
+        scanner.close();
     }
 }
