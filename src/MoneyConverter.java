@@ -47,7 +47,7 @@ public class MoneyConverter {
         System.out.println("c. JPY");
 
         System.out.print("Choice: ");
-        char choice = scanner.next();
+        String choice = scanner.next();
         switch (choice.toLowerCase()) {
             case "a":
                 System.out.println("Conversion result to USD: " + converter.USD() + " USD");
