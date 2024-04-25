@@ -47,15 +47,15 @@ public class MoneyConverter {
         System.out.println("c. JPY");
 
         System.out.print("Choice: ");
-        char choice = scanner.next().charAt(0);
-        switch (choice) {
-            case 'a':
+        String choice = scanner.next();
+        switch (choice.toLowerCase()) {
+            case "a":
                 System.out.println("Conversion result to USD: " + converter.USD() + " USD");
                 break;
-            case 'b':
+            case "b":
                 System.out.println("Conversion result to SGD: " + converter.SGD() + " SGD");
                 break;
-            case 'c':
+            case "c":
                 System.out.println("Conversion result to JPY: " + converter.JYP() + " JPY");
                 break;
             default:
