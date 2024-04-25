@@ -76,9 +76,9 @@ public class BankApplication {
         System.out.println("WELCOME TO SIMPLE BANKING APP!");
         System.out.println("==================================");
         System.out.print("Enter account number: ");
-        String accNum = scanner.nextLine();
+        String accNum = scanner.next();
         System.out.print("Enter PIN: ");
-        String pin = scanner.nextLine();
+        String pin = scanner.next();
 
         if (account.verification(accNum, pin)) {
             System.out.println("Verification successful.");
@@ -93,23 +93,38 @@ public class BankApplication {
             System.out.println("c. Convert credit to cash");
             System.out.println("==================================");
             System.out.print("Enter your choice: ");
-            String choice = scanner.nextLine();
+            String choice = scanner.next();
 
             switch (choice.toLowerCase()) {
                 case "a":
-                    System.out.print("Enter withdrawal amount: ");
-                    double withdrawalAmount = scanner.nextDouble();
-                    BankSystem.withdrawal(account, withdrawalAmount);
+                    try {
+                        System.out.print("Enter withdrawal amount: ");
+                        double withdrawalAmount = scanner.nextDouble();
+                        BankSystem.withdrawal(account, withdrawalAmount);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid number of withdrawl amount.");
+                        scanner.nextLine();
+                    }
                     break;
                 case "b":
-                    System.out.print("Enter deposit amount: ");
-                    double depositAmount = scanner.nextDouble();
-                    BankSystem.deposit(account, depositAmount);
+                    try {
+                        System.out.print("Enter deposit amount: ");
+                        double depositAmount = scanner.nextDouble();
+                        BankSystem.deposit(account, depositAmount);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid number of deposit amount.");
+                        scanner.nextLine();
+                    }
                     break;
                 case "c":
-                    System.out.print("Enter credit amount to convert: ");
-                    int creditToConvert = scanner.nextInt();
-                    BankSystem.convertCreditToCash(account, creditToConvert);
+                    try {
+                        System.out.print("Enter credit amount to convert: ");
+                        int creditToConvert = scanner.nextInt();
+                        BankSystem.convertCreditToCash(account, creditToConvert);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input! Please enter a valid number od credit amount.");
+                        scanner.nextLine();
+                    }
                     break;
                 default:
                     System.out.println("Invalid choice.");
